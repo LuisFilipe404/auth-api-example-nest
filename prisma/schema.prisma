@@ -1,0 +1,45 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+
+model User {
+  id      String  @id @default(uuid())
+  name    String
+  email   String @unique
+  password String
+  role  String  @default("Customer")
+
+  userCompanies UserCompany[]
+}
+
+model Company {
+  id            String          @id @default(uuid())
+  name          String
+  owner         String?
+  phone         String?
+  description   String?
+  cnpj          String
+  status        Boolean
+  cep String
+  logradouro String
+  complement String
+  companyUsers  UserCompany[]
+}
+
+
+model UserCompany {
+  id        String  @id @default(uuid())
+  userId    String
+  companyId String
+  
+  // Chaves estrangeiras para os modelos User e Company
+  user      User    @relation(fields: [userId], references: [id])
+  company   Company @relation(fields: [companyId], references: [id])
+}
+
